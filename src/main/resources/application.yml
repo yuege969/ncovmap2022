@@ -1,0 +1,20 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ncovmap?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT&autoReconnect=true&failOverReadOnly=false
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    mvc:
+      static-path-pattern: /**
+  thymeleaf:
+    cache: false # 开发时关闭缓存,不然没法看到实时页面
+    prefix: classpath:/templates/
+    check-template: true
+    check-template-location: true
+    suffix: .html
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+      mode:  HTML5

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
+    <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
+</head>
+<body>
+
+<div style="padding: 10px;" id="nav2" th:method="post">
+    <ul class="layui-nav">
+        <li class="layui-nav-item">
+            <a href="user/console">控制台<span class="layui-badge">9</span></a>
+        </li>
+        <!-- 设定layui-this来指向当前页面,即绿色滑块移动到该分类下方 -->
+        <li class="layui-nav-item layui-this">
+            <a href="user/personCenter">个人中心<span class="layui-badge-dot"></span></a>
+        </li>
+        <li class="layui-nav-item">
+            <a href=""><i class="layui-icon layui-icon-user" style="font-size: 20px;margin: 0px 10px;"></i>我</a>
+            <dl class="layui-nav-child">
+                <dd><a href="user/update">修改信息</a></dd>
+                <dd><a href="user/retreat">退了</a></dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    layui.use(['element','form'],function () {
+        var element = layui.element
+            ,form=layui.form;
+    });
+</script>
+
+</body>
+</html>
