@@ -325,7 +325,6 @@ public class UserController {
             out.println("</script>");
             out.flush();
         }
-
     }
     //实现绑定邮箱功能
     @RequestMapping(value = "/updateMail",method=RequestMethod.POST)

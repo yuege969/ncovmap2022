@@ -49,8 +49,8 @@
             ,form=layui.form;
     });
     //基本地图加载
-    $.get('../js/province/shandong.json',function(rs){
-        echarts.registerMap('shandong',rs);
+    $.get('../js/china.json',function(rs){
+        echarts.registerMap('china',rs);
         showMap();
     })
 
@@ -58,14 +58,14 @@
         var myChart = echarts.init(document.getElementById('china-map'));
         var option = {
             tooltip: {
-//                    show: false //不显示提示标签
+                // show: false, //不显示提示标签
                 formatter: '{b}', //提示标签格式
                 backgroundColor:"#ff7f50",//提示标签背景颜色
                 textStyle:{color:"#fff"} //提示标签字体颜色
             },
             series: [{
                 type: 'map',
-                mapType: 'shandong',
+                mapType: 'china',
                 label: {
                     normal: {
                         show: true,//显示省份标签
@@ -104,6 +104,23 @@
             var dataIndex = params.dataIndex;
             console.log(params);
         });
+        myChart.on('click', function (params){
+            var name = params.name;
+            //alert(name);
+            $.ajax({
+                url:"/map/checkProvince", 	//url地址
+                async:true,					//是否是异步请求
+                type:"POST",				//请求方式
+                data:{"province":name},  //带给服务器的参数
+                cache: false,
+                success:function(data){		//成功后的回调函数
+                    //data 是服务器返回的参数
+                    alert(data.name);
+                },
+                dataType:"json"  //返回数据data的类型
+            });
+            // $.ajaxSetup({cache: false});
+        })
     }
 </script>
 </body>
