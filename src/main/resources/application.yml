@@ -18,3 +18,9 @@ spring:
     servlet:
       content-type: text/html
       mode:  HTML5
+
+
+mybatis:
+  #    mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath*:/mapper/*.xml
+  type-aliases-package: com.springbootmybatis.entity

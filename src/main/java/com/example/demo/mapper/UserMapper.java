@@ -1,11 +1,10 @@
 package com.example.demo.mapper;
 
-import com.example.demo.domain.User;
+import com.example.demo.entity.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Repository
 @Mapper

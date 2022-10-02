@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-import com.example.demo.domain.User;
+import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.util.SendMail;
 import com.example.demo.util.md5.Md5Utils;
