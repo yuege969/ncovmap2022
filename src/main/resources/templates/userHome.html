@@ -5,48 +5,10 @@
     <title>首页</title>
     <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
     <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
-
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <script src="../js/jquery-3.6.1.js"></script>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <style type="text/css">
-        html,
-        body,
-        #container {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-    <style type="text/css">
-        #panel {
-            position: fixed;
-            background-color: white;
-            max-height: 90%;
-            overflow-y: auto;
-            top: 10px;
-            right: 10px;
-            width: 280px;
-        }
-        #panel .amap-call {
-            background-color: #009cf9;
-            border-top-left-radius: 4px;
-            border-top-right-radius: 4px;
-        }
-        #panel .amap-lib-driving {
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-            overflow: hidden;
-        }
-    </style>
-    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
-    <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
-    <script type="text/javascript">
-        window._AMapSecurityConfig = {
-            securityJsCode:'64fb1786f41cbaec5bb01761d44767bd',
-        }
-    </script>
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=f6ae2f05b4247360ddc4beaae1043433&plugin=AMap.ToolBar,AMap.Driving"></script>
-    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
 </head>
 <body>
 
@@ -78,8 +40,8 @@
         </li>
     </ul>
 </div>
-<div id="container"></div>
-<div id="panel"></div>
+
+<div class="china-map" id="china-map" style="width:1000px;height:600px;"></div>
 
 <script type="text/javascript">
     layui.use(['element','form'],function () {
@@ -87,28 +49,62 @@
             ,form=layui.form;
     });
     //基本地图加载
-    var map = new AMap.Map("container", {
-        resizeEnable: true,
-        center: [116.397428, 39.90923],//地图中心点
-        zoom: 13 //地图显示的缩放级别
-    });
-    //构造路线导航类
-    var driving = new AMap.Driving({
-        map: map,
-        panel: "panel"
-    });
-    // 根据起终点名称规划驾车导航路线
-    driving.search([
-        {keyword: '鲁东大学北区',city:'烟台'},
-        {keyword: '烟台大学',city:'烟台'}
-    ], function(status, result) {
-        // result 即是对应的驾车导航信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
-        if (status === 'complete') {
-            log.success('绘制驾车路线完成')
-        } else {
-            log.error('获取驾车数据失败：' + result)
-        }
-    });
+    $.get('../js/province/shandong.json',function(rs){
+        echarts.registerMap('shandong',rs);
+        showMap();
+    })
+
+    function showMap(){
+        var myChart = echarts.init(document.getElementById('china-map'));
+        var option = {
+            tooltip: {
+//                    show: false //不显示提示标签
+                formatter: '{b}', //提示标签格式
+                backgroundColor:"#ff7f50",//提示标签背景颜色
+                textStyle:{color:"#fff"} //提示标签字体颜色
+            },
+            series: [{
+                type: 'map',
+                mapType: 'shandong',
+                label: {
+                    normal: {
+                        show: true,//显示省份标签
+                        textStyle:{color:"#c71585"}//省份标签字体颜色
+                    },
+                    emphasis: {//对应的鼠标悬浮效果
+                        show: true,
+                        textStyle:{color:"#800080"}
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        borderWidth: .5,//区域边框宽度
+                        borderColor: '#009fe8',//区域边框颜色
+                        areaColor:"#ffefd5",//区域颜色
+                    },
+                    emphasis: {
+                        borderWidth: .5,
+                        borderColor: '#4b0082',
+                        areaColor:"#f47920",
+                    }
+                },
+                data:[
+                    {name:'青秀区', selected:true},//广西为选中状态
+                    {name:'江南区', selected:true},//贵州为选中状态
+                    {name:'西乡塘区', selected:true},//云南为选中状态
+                    {name:'良庆区', selected:true},//云南为选中状态
+                    {name:'兴宁区', selected:true},//云南为选中状态
+                    {name:'邕宁区', selected:true},//云南为选中状态
+                ]
+            }],
+        };
+
+        myChart.setOption(option);
+        myChart.on('mouseover', function (params) {
+            var dataIndex = params.dataIndex;
+            console.log(params);
+        });
+    }
 </script>
 </body>
 </html>
