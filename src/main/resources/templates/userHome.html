@@ -8,8 +8,18 @@
     <script src="../js/echarts.min.js"></script>
     <script src="../js/echarts.js"></script>
     <script src="../js/jquery-3.6.1.js"></script>
-    <meta charset="utf-8">
+    <script src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/china.js"></script>
+<!--    <script src="../js/province/anhui.js"></script>-->
+
+    <link rel="stylesheet" href="../css/map.css">
 </head>
+
+<style>
+    body{
+        background-color: #e6e6e6;
+    }
+</style>
 <body>
 
 <div style="padding: 10px;" id="nav2" th:method="post">
@@ -41,86 +51,242 @@
     </ul>
 </div>
 
-<div class="china-map" id="china-map" style="width:1000px;height:600px;"></div>
+<div id="title">
+    <span class="time"></span>
+    <center>中国疫情可视化系统</center>
+</div>
+
+<div id="china-map">
+    <div id="label1">
+        <div class="item">
+            <div class="number" id="confirm" >123</div>
+            <div class="text">累计确诊</div>
+        </div>
+        <div class="item">
+            <div class="number" id="heal" style="color:#178B50">123</div>
+            <div class="text">累计治愈</div>
+        </div>
+        <div class="item">
+            <div class="number" id="dead">123</div>
+            <div class="text">累计死亡</div>
+        </div>
+        <div class="item">
+            <div class="number" id="nowConfirm" style="color: #E61C1D">123</div>
+            <div class="text">现有确诊</div>
+        </div>
+    </div>
+</div>
+
+</div>
 
 <script type="text/javascript">
     layui.use(['element','form'],function () {
         var element = layui.element
             ,form=layui.form;
     });
-    //基本地图加载
-    $.get('../js/china.json',function(rs){
-        echarts.registerMap('china',rs);
-        showMap();
-    })
+    var myChart = echarts.init(document.getElementById("china-map"));
+    var provincesText = [
+        '上海', '河北', '山西', '内蒙古',
+        '辽宁', '吉林','黑龙江',  '江苏', '浙江',
+        '安徽', '福建', '江西', '山东', '河南',
+        '湖北', '湖南', '广东', '广西', '海南',
+        '四川', '贵州', '云南', '西藏', '陕西',
+        '甘肃', '青海', '宁夏', '新疆', '北京',
+        '天津', '重庆', '香港', '澳门', '台湾'
+    ];
+    var provinces = [
+        'shanghai', 'hebei','shanxi','neimenggu',
+        'liaoning','jilin','heilongjiang','jiangsu','zhejiang',
+        'anhui','fujian','jiangxi','shandong','henan',
+        'hubei','hunan','guangdong','guangxi','hainan',
+        'sichuan','guizhou','yunnan','xizang','shanxi1',
+        'gansu','qinghai','ningxia','xinjiang', 'beijing',
+        'tianjin', 'chongqing', 'xianggang', 'aomen', 'taiwan'
+    ];
+    var catches = {};
 
-    function showMap(){
-        var myChart = echarts.init(document.getElementById('china-map'));
+    loadMap("china", "中国");
+
+    // 加载地图
+    function loadMap(mapType, name) {
+        console.log(mapType);
+        console.log(name);
         var option = {
+            title: {
+                text: name || mapType,
+                left: "center",
+                textStyle: {
+                    fontSize: 20,
+                    color: "rgba(255, 0, 0, 1)"
+                },
+            },
             tooltip: {
-                // show: false, //不显示提示标签
-                formatter: '{b}', //提示标签格式
-                backgroundColor:"#ff7f50",//提示标签背景颜色
-                textStyle:{color:"#fff"} //提示标签字体颜色
+                //show:true,
+                trigger: 'item',
+            },
+            visualMap: { //左侧小导航图标
+                show: true,
+                x: 'left',
+                y: 'bottom',
+                textStyle: {
+                    fontSize: 8,
+                },
+                splitList: [{start: 0, end: 9},
+                    {start: 10, end: 99},
+                    {start: 100, end: 999},
+                    {start: 1000, end: 9999},
+                    {start: 10000}],
+                color: ['#8A3310', '#C64918', '#E55B25', '#F2AD92', '#F9DCD1']
             },
             series: [{
-                type: 'map',
-                mapType: 'china',
-                label: {
+                name: name || mapType,
+                type: "map",
+                mapType,
+                roam: true, //是否开启鼠标缩放和平移漫游
+                itemStyle: {		//图形样式
                     normal: {
-                        show: true,//显示省份标签
-                        textStyle:{color:"#c71585"}//省份标签字体颜色
-                    },
-                    emphasis: {//对应的鼠标悬浮效果
-                        show: true,
-                        textStyle:{color:"#800080"}
-                    }
-                },
-                itemStyle: {
-                    normal: {
-                        borderWidth: .5,//区域边框宽度
+                        borderWidth: .3,//区域边框宽度
                         borderColor: '#009fe8',//区域边框颜色
-                        areaColor:"#ffefd5",//区域颜色
+                        areaColor: '#ffefd5',       //区域颜色
                     },
-                    emphasis: {
+                    emphasis: {      //鼠标滑过地图高亮的相关设置
                         borderWidth: .5,
                         borderColor: '#4b0082',
-                        areaColor:"#f47920",
+                        areaColor: '#fff',
                     }
                 },
-                data:[
-                    {name:'青秀区', selected:true},//广西为选中状态
-                    {name:'江南区', selected:true},//贵州为选中状态
-                    {name:'西乡塘区', selected:true},//云南为选中状态
-                    {name:'良庆区', selected:true},//云南为选中状态
-                    {name:'兴宁区', selected:true},//云南为选中状态
-                    {name:'邕宁区', selected:true},//云南为选中状态
-                ]
+                label: { // 图形上的文本标签
+                    normal: {
+                        show: true,   //市区名称
+                        fontSize: 10,
+                    },
+                    emphasis: {
+                        show: true,
+                        fontSize: 8,
+                    }
+                },
+                aspectScale: mapType === "china" ? 0.75 : 1,
+                top: "10%", //组件距离容器的距离
+                data: []
             }],
         };
-
-        myChart.setOption(option);
-        myChart.on('mouseover', function (params) {
-            var dataIndex = params.dataIndex;
-            console.log(params);
-        });
-        myChart.on('click', function (params){
-            var name = params.name;
-            //alert(name);
+        if(mapType === "china"){
             $.ajax({
-                url:"/map/selectProvince", 	//url地址
-                async:true,					//是否是异步请求
-                type:"POST",				//请求方式
-                data:{"province":name},  //带给服务器的参数
-                cache: false,
-                success:function(data){		//成功后的回调函数
-                    //data 是服务器返回的参数
-                    alert(data.name);
-                },
-                dataType:"json"  //返回数据data的类型
+                url: '/map/getData',
+                data: {},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    var provinces = res;
+                    console.log("各省信息");
+                    console.log(res);
+                    for (var province of provinces) {
+                        option.series[0].data.push({
+                            // 'name': province.name,
+                            'name': province.provinceName,
+                            'value': province.currentConfirmedCount,
+                            //console.log(province.total.confirm)
+                        });
+                    }
+                    myChart.setOption(option);
+                }
             });
-            // $.ajaxSetup({cache: false});
-        })
+        }
+        else{
+            $.ajax({
+                type: 'post',
+                url: '/map/clickProvince',
+                data: {"province":mapType},
+                dataType: 'json',
+                success: function (res) {
+                    //console.log(res);
+                    console.log("点击返回的信息");
+                    var cities = res;
+                    console.log("cities");
+                    console.log(res);
+                    for (var city of cities) {
+                        option.series[0].data.push({
+                            'name': city.cityName,
+                            'value': city.currentConfirmedCount,
+                            //console.log(province.total.confirm)
+                        });
+                    }
+                    myChart.setOption(option);
+                    //console.log(data);
+                }
+            });
+        }
+
+        // 清理画布
+        //myChart.clear();
+
+        console.log("debug myChart");
+        console.log(myChart);
+
+        myChart.off("click");
+
+        if (mapType === "china") {
+            // 全国时，添加click 进入省级
+            myChart.on("click", function (param) {
+                //遍历取到provincesText 中的下标  去拿到对应的省js
+                for (var i = 0; i < provincesText.length; i++) {
+                    if (param.name === provincesText[i]) {
+                        //显示对应省份的方法
+                        showProvince(provinces[i], provincesText[i]);
+                        break;
+                    }
+                }
+            });
+        } else {
+            // 省份，添加双击 回退到全国
+            myChart.on("dblclick", function () {
+                loadMap("china", "中国");
+            });
+        }
+    }
+
+    // 展示对应的省
+    function showProvince(mapType, name) {
+        //这写省份的js都是通过在线构建工具生成的，保存在本地，需要时加载使用即可，最好不要一开始全部直接引入。
+        if (catches[name]) {
+            loadMap(name);
+        } else {
+            catches[mapType] = true;
+
+            loadBdScript(
+                "$" + mapType + "JS",
+                "../js/province/" + mapType + ".js",
+                function () {
+                    loadMap(name);
+                }
+            );
+        }
+    }
+
+    // 加载对应的JS
+    function loadBdScript(scriptId, url, callback) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        if (script.readyState) {
+            //IE
+            script.onreadystatechange = function () {
+                if (
+                    script.readyState === "loaded" ||
+                    script.readyState === "complete"
+                ) {
+                    script.onreadystatechange = null;
+                    callback();
+                }
+            };
+        } else {
+            // Others
+            script.onload = function () {
+                callback();
+            };
+        }
+        script.src = url;
+        script.id = scriptId;
+        document.getElementsByTagName("head")[0].appendChild(script);
     }
 </script>
 </body>

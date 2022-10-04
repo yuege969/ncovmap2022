@@ -13,13 +13,18 @@
     <update id="update">
         update province
         set currentConfirmedCount=#{currentConfirmedCount},confirmedCount=#{confirmedCount},curedCount=#{curedCount},deadCount=#{deadCount},suspectedCount=#{suspectedCount}
-        where provinceName=#{provinceName}
+        where provinceName like concat ('%',#{provinceName},'%')
     </update>
     
     <select id="selectByProvinceName"  resultType="com.example.demo.entity.ProvinceInfo">
         select *
         from province
-        where provinceName=#{provinceName}
+        where provinceName like concat ('%',#{provinceName},'%')
+    </select>
+
+    <select id="selectAllProvince"  resultType="com.example.demo.entity.ProvinceInfo">
+        select *
+        from province
     </select>
 
 

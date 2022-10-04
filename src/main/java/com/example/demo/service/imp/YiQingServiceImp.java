@@ -152,7 +152,7 @@ public class YiQingServiceImp implements YiQingService {
     }
 
 
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0/300 * * * * ?")
     public void updateInfo(){
 
 //        System.out.println("执行定时任务");
@@ -173,7 +173,7 @@ public class YiQingServiceImp implements YiQingService {
         String result = "";
         if (totalMatcher.find()) {
             result = totalMatcher.group(1);
-            System.out.println(result);
+            // System.out.println(result);
             // 各个省市的是一个列表List，如果想保存到数据库中，要遍历结果，下面是demo
             JSONArray array = JSONArray.parseArray(result);
             //                Connection con = DriverManager.getConnection("VData");

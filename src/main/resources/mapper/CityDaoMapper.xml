@@ -35,7 +35,8 @@
     <select id="selectByName" resultType="com.example.demo.entity.CityInfo">
         select *
         from city
-        where cityName=#{cityName}
+        where cityName like concat ('%',#{cityName},'%')
+
     </select>
 
     <select id="selectByProvinceId" resultType="com.example.demo.entity.CityInfo">

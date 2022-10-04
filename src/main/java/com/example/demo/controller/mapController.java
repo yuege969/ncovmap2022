@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.entity.CityInfo;
 import com.example.demo.entity.ProvinceInfo;
@@ -7,7 +8,9 @@ import com.example.demo.service.CityService;
 import com.example.demo.service.ProvinceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,43 +28,55 @@ public class mapController {
     @Autowired
     private ProvinceService provinceService;
 
+    @RequestMapping(value="/getData")
+    public JSONArray getData(HttpServletRequest request){
+        List<ProvinceInfo> allProvince = provinceService.selectAllProvince();
+        //JSONObject json=JSONObject.fromObject(allProvince);
+
+        String jsonStr = null;
+        JSONArray array = new JSONArray();
+        JSONObject obj;
+        for(ProvinceInfo provinceInfo:allProvince){
+            obj = new JSONObject();
+            obj.put("provinceName",provinceInfo.getProvinceName());
+            obj.put("currentConfirmedCount",provinceInfo.getCurrentConfirmedCount());
+            obj.put("confirmedCount",provinceInfo.getConfirmedCount());
+            obj.put("curedCount",provinceInfo.getCuredCount());
+            obj.put("deadCount",provinceInfo.getDeadCount());
+            obj.put("suspectedCount",provinceInfo.getSuspectedCount());
+            array.add(obj);
+        }
+        System.out.println(array.toString());
+        return array;
+    }
 
     /**
      * 获取省份的疫情数据
      * @param request
      * @return
      */
-    @RequestMapping(value = "/selectProvince")
-    public String selectProvince(HttpServletRequest request){
+    @RequestMapping(value = "/clickProvince")
+    public JSONArray clickProvince(HttpServletRequest request){
         String name = request.getParameter("province");
-        System.out.println("获取的省份是 "+name);
-
+        System.out.println("鼠标点击获取的省份是 "+name);
         ProvinceInfo provinceInfo = provinceService.selectByProvinceName(name);
-
         String s = JSON.toJSONString(provinceInfo);
-        System.out.println(s);
+//        System.out.println(s);
         List<CityInfo> cityInfos = cityService.selectByProvinceId(provinceInfo.getId());
-        String s1 = JSON.toJSONString(cityInfos);
-        System.out.println(s1);
-
-        return s+s1;
+        String jsonStr = null;
+        JSONArray array = new JSONArray();
+        JSONObject obj;
+        for(CityInfo cityInfo:cityInfos){
+            obj = new JSONObject();
+            obj.put("provinceName",cityInfo.getCityName());
+            obj.put("currentConfirmedCount",cityInfo.getCurrentConfirmedCount());
+            obj.put("confirmedCount",cityInfo.getConfirmedCount());
+            obj.put("curedCount",cityInfo.getCuredCount());
+            obj.put("deadCount",cityInfo.getDeadCount());
+            obj.put("suspectedCount",cityInfo.getSuspectedCount());
+            array.add(obj);
+        }
+        System.out.println(array.toString());
+        return array;
     }
-
-    /**
-     * 获取城市的疫情数据
-     * @param request
-     * @return
-     */
-    @RequestMapping(value = "/selectCity")
-    public String selectCity(HttpServletRequest request){
-        String name=request.getParameter("city");
-        System.out.println("获取的城市是 "+name);
-        CityInfo cityInfo = cityService.selectByName(name);
-        System.out.println(cityInfo);
-        String s = JSON.toJSONString(cityInfo);
-
-        return s;
-
-    }
-
 }
