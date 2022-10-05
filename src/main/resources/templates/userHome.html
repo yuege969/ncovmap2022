@@ -99,7 +99,7 @@
         'liaoning','jilin','heilongjiang','jiangsu','zhejiang',
         'anhui','fujian','jiangxi','shandong','henan',
         'hubei','hunan','guangdong','guangxi','hainan',
-        'sichuan','guizhou','yunnan','xizang','shanxi1',
+        'sichuan','guizhou','yunnan','xizang','shaanxi',
         'gansu','qinghai','ningxia','xinjiang', 'beijing',
         'tianjin', 'chongqing', 'xianggang', 'aomen', 'taiwan'
     ];
@@ -109,8 +109,8 @@
 
     // 加载地图
     function loadMap(mapType, name) {
-        console.log(mapType);
-        console.log(name);
+        // console.log(mapType);
+        // console.log(name);
         var option = {
             title: {
                 text: name || mapType,
@@ -124,25 +124,35 @@
                 //show:true,
                 trigger: 'item',
             },
-            visualMap: { //左侧小导航图标
-                show: true,
-                x: 'left',
-                y: 'bottom',
-                textStyle: {
-                    fontSize: 8,
-                },
-                splitList: [{start: 0, end: 9},
-                    {start: 10, end: 99},
-                    {start: 100, end: 999},
-                    {start: 1000, end: 9999},
-                    {start: 10000}],
-                color: ['#8A3310', '#C64918', '#E55B25', '#F2AD92', '#F9DCD1']
+            // visualMap: { //左侧小导航图标
+            //     show: true,
+            //     x: 'left',
+            //     y: 'bottom',
+            //     textStyle: {
+            //         fontSize: 8,
+            //     },
+            //     splitList: [{start: 0, end: 9},
+            //         {start: 10, end: 99},
+            //         {start: 100, end: 999},
+            //         {start: 1000, end: 9999},
+            //         {start: 10000}],
+            //     color: ['#8A3310', '#C64918', '#E55B25', '#F2AD92', '#F9DCD1']
+            // },
+            visualMap: {
+                min: 1,
+                max: 1000,
+                text: ['High', 'Low'],
+                realtime: false,
+                calculable: true,
+                inRange: {
+                    color: ['lightskyblue', 'yellow', 'orangered']
+                }
             },
             series: [{
                 name: name || mapType,
                 type: "map",
                 mapType,
-                roam: true, //是否开启鼠标缩放和平移漫游
+                roam: false, //是否开启鼠标缩放和平移漫游
                 itemStyle: {		//图形样式
                     normal: {
                         borderWidth: .3,//区域边框宽度
@@ -180,6 +190,16 @@
                     var provinces = res;
                     console.log("各省信息");
                     console.log(res);
+                    myChart.setOption(option);
+                    var regions = myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.originalData._nameList;
+                    if(myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.coordinateSystem.name==="china"){
+                        console.log("各个省名称");
+                        console.log(regions);
+                    }
+                    else{
+                        console.log("各个城市名称");
+                        console.log(regions);
+                    }
                     for (var province of provinces) {
                         option.series[0].data.push({
                             // 'name': province.name,
@@ -201,27 +221,49 @@
                 success: function (res) {
                     //console.log(res);
                     console.log("点击返回的信息");
-                    var cities = res;
                     console.log("cities");
                     console.log(res);
+                    myChart.setOption(option)
+                    // console.log("debug myChart");
+                    // console.log(myChart);
+                    var regions = myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.originalData._nameList;
+                    if(myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.coordinateSystem.name==="china"){
+                        console.log("各个省名称");
+                        console.log(regions);
+                    }
+                    else{
+                        console.log("各个城市名称");
+                        console.log(regions);
+                    }
+                    var cities = []
+                    for(var i = 0; i < regions.length; i++){
+                        var name = regions[i];
+                        for(var j = 0; j < res.length; j++){
+                            var item = res[j];
+                            var str = ""+name;
+                            var n = str.search(item.cityName);
+                            //console.log(name + "---" + item.cityName + "---" + n);
+                            if(n != -1){
+                                cities.push({'name':name,'value':item.currentConfirmedCount});
+                                break;
+                            }
+                        }
+                    }
+                    console.log("正则之后的城市数据");
+                    console.log(cities);
                     for (var city of cities) {
                         option.series[0].data.push({
-                            'name': city.cityName,
-                            'value': city.currentConfirmedCount,
-                            //console.log(province.total.confirm)
+                            'name': city["name"],
+                            'value': city["value"],
                         });
                     }
                     myChart.setOption(option);
-                    //console.log(data);
                 }
             });
         }
 
         // 清理画布
         //myChart.clear();
-
-        console.log("debug myChart");
-        console.log(myChart);
 
         myChart.off("click");
 
@@ -252,7 +294,6 @@
             loadMap(name);
         } else {
             catches[mapType] = true;
-
             loadBdScript(
                 "$" + mapType + "JS",
                 "../js/province/" + mapType + ".js",

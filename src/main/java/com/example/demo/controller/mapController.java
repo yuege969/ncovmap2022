@@ -68,7 +68,7 @@ public class mapController {
         JSONObject obj;
         for(CityInfo cityInfo:cityInfos){
             obj = new JSONObject();
-            obj.put("provinceName",cityInfo.getCityName());
+            obj.put("cityName",cityInfo.getCityName());
             obj.put("currentConfirmedCount",cityInfo.getCurrentConfirmedCount());
             obj.put("confirmedCount",cityInfo.getConfirmedCount());
             obj.put("curedCount",cityInfo.getCuredCount());
