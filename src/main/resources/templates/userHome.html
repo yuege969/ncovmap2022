@@ -10,14 +10,12 @@
     <script src="../js/jquery-3.6.1.js"></script>
     <script src="../js/jquery.min.js"></script>
     <script type="text/javascript" src="../js/china.js"></script>
-<!--    <script src="../js/province/anhui.js"></script>-->
-
     <link rel="stylesheet" href="../css/map.css">
 </head>
 
 <style>
     body{
-        background-color: #e6e6e6;
+        background-color: #ffe9b5;
     }
 </style>
 <body>
@@ -77,14 +75,13 @@
     </div>
 </div>
 
-</div>
-
 <script type="text/javascript">
     layui.use(['element','form'],function () {
         var element = layui.element
             ,form=layui.form;
     });
     var myChart = echarts.init(document.getElementById("china-map"));
+    console.log("初始化");
     var provincesText = [
         '上海', '河北', '山西', '内蒙古',
         '辽宁', '吉林','黑龙江',  '江苏', '浙江',
