@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>首页</title>
+    <title>系统首页</title>
     <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
     <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
     <script src="../js/echarts.min.js"></script>
@@ -13,14 +13,9 @@
     <link rel="stylesheet" href="../css/map.css">
 </head>
 
-<style>
-    body{
-        background-color: #ffe9b5;
-    }
-</style>
 <body>
 
-<div style="padding: 10px;" id="nav2" th:method="post">
+<div style="padding: 5px;height: 8%" id="nav2" th:method="post">
     <ul class="layui-nav layui-bg-green" lay-filter="">
         <li style="display: block;" class="layui-nav-item">
             <span style="float: left;" class="layui-icon layui-icon-username" th:text="${uname}"></span>
@@ -49,29 +44,28 @@
     </ul>
 </div>
 
-<div id="title">
+<div id="title" style="height: 8%">
     <span class="time"></span>
-    <center>中国疫情可视化系统</center>
+    <center style="font-size:25px">中国疫情可视化系统</center>
 </div>
 
-<div id="china-map">
-    <div id="label1">
-        <div class="item">
-            <div class="number" id="confirm" >123</div>
-            <div class="text">累计确诊</div>
-        </div>
-        <div class="item">
-            <div class="number" id="heal" style="color:#178B50">123</div>
-            <div class="text">累计治愈</div>
-        </div>
-        <div class="item">
-            <div class="number" id="dead">123</div>
-            <div class="text">累计死亡</div>
-        </div>
-        <div class="item">
-            <div class="number" id="nowConfirm" style="color: #E61C1D">123</div>
-            <div class="text">现有确诊</div>
-        </div>
+<div id="china-map"></div>
+<div id="summary" style="height: 8px">
+    <div class="item">
+        <div class="text">累计确诊</div>
+        <div class="number" id="confirm" >123</div>
+    </div>
+    <div class="item">
+        <div class="text">累计治愈</div>
+        <div class="number" id="heal" style="color:#178B50">123</div>
+    </div>
+    <div class="item">
+        <div class="text">累计死亡</div>
+        <div class="number" id="dead">123</div>
+    </div>
+    <div class="item">
+        <div class="text">现有确诊</div>
+        <div class="number" id="nowConfirm" style="color: #E61C1D">123</div>
     </div>
 </div>
 
@@ -206,6 +200,7 @@
                         });
                     }
                     myChart.setOption(option);
+                    summary(mapType,name,provinces);
                 }
             });
         }
@@ -255,6 +250,7 @@
                         });
                     }
                     myChart.setOption(option);
+                    summary(mapType,name,res);
                 }
             });
         }
@@ -325,6 +321,53 @@
         script.src = url;
         script.id = scriptId;
         document.getElementsByTagName("head")[0].appendChild(script);
+    }
+
+    /**
+     * 实时显示时间
+     */
+    function showTime() {
+        var time = new Date();
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1 + '').padStart(2, '0');
+        var day = (time.getDate() + '').padStart(2, '0');
+        var hour = (time.getHours() + '').padStart(2, '0');
+        var minute = (time.getMinutes() + '').padStart(2, '0');
+        var second = (time.getSeconds() + '').padStart(2, '0');
+
+        var content = `${year}年${month}月${day}日${hour}:${minute}:${second}`;
+        $('#title .time').text(content);
+    }
+    showTime();
+    setInterval(showTime, 1000);      //每秒运行一次
+    function summary(mapType, name, data) {
+        var confirmedCount = 0;
+        var curedCount = 0;
+        var deadCount = 0;
+        var currentConfirmedCount = 0;
+        if(mapType === "china"){
+            var provinces = data;
+            for (var province of provinces) {
+                confirmedCount += province.confirmedCount;
+                curedCount += province.curedCount;
+                deadCount += province.deadCount;
+                currentConfirmedCount += province.currentConfirmedCount;
+            }
+        }
+        else{
+            cities = data;
+            for (var city of cities) {
+                confirmedCount += city.confirmedCount;
+                curedCount += city.curedCount;
+                deadCount += city.deadCount;
+                currentConfirmedCount += city.currentConfirmedCount;
+            }
+        }
+
+        $('#confirm').text(confirmedCount);
+        $('#heal').text(curedCount);
+        $('#dead').text(deadCount);
+        $('#nowConfirm').text(currentConfirmedCount);
     }
 </script>
 </body>
