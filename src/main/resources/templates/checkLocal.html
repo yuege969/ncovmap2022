@@ -53,7 +53,15 @@
 
 
     function drawPieChart(data) {
-      console.log("draw pie chart");
+      var _chart = echarts.init(document.getElementById('pie_chart'));
+      var _chart_option = {
+        name: data['city'],
+        type: 'pie',
+        radius: '55%',
+        data: data['data']
+      }
+
+      _chart.setOption(_chart_option);
     }
   </script>
 </body>
