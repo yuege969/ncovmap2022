@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>系统首页</title>
+    <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
+    <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
+    <script src="../js/echarts.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <script src="../js/jquery-3.6.1.js"></script>
+    <script src="../js/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/china.js"></script>
+    <link rel="stylesheet" href="../css/map.css">
+</head>
+
+<body>
+
+<div style="padding: 5px;height: 8%" id="nav2" th:method="post">
+    <ul class="layui-nav layui-bg-green" lay-filter="">
+        <li style="display: block;" class="layui-nav-item">
+            <span style="float: left;" class="layui-icon layui-icon-username" th:text="${uname}"></span>
+        </li>
+        <li class="layui-nav-item layui-this">
+            <a><i class="layui-icon layui-icon-console" style="font-size: 20px;margin: 0px 10px;"></i>控制台</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/checkLocal">查看本地疫情</a></dd>
+                <dd><a href="/checkCountry">查看全国疫情</a></dd>
+            </dl>
+        </li>
+        <!-- 设定layui-this来指向当前页面,即绿色滑块移动到该分类下方 -->
+        <li class="layui-nav-item">
+            <a><i class="layui-icon layui-icon-home" style="font-size: 20px;margin: 0px 10px;"></i>个人中心</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/user/checkPersonInformation">查看个人信息</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a><i class="layui-icon layui-icon-user" style="font-size: 20px;margin: 0px 10px;"></i>我</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/user/update">修改信息</a></dd>
+                <dd><a href="/user/retreat">退了</a></dd>
+            </dl>
+        </li>
+    </ul>
+</div>
+
+<div id="title" style="height: 8%">
+    <span class="time"></span>
+    <div style="height: 10px;"></div>
+    <center style="font-size:25px">中国疫情可视化系统</center>
+</div>
+
+<div id="china-map"></div>
+<div id="summary" style="height: 8px">
+    <div class="item">
+        <div class="text">累计确诊</div>
+        <div class="number" id="confirm" >123</div>
+    </div>
+    <div class="item">
+        <div class="text">累计治愈</div>
+        <div class="number" id="heal" style="color:#178B50">123</div>
+    </div>
+    <div class="item">
+        <div class="text">累计死亡</div>
+        <div class="number" id="dead">123</div>
+    </div>
+    <div class="item">
+        <div class="text">现有确诊</div>
+        <div class="number" id="nowConfirm" style="color: #E61C1D">123</div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    layui.use(['element','form'],function () {
+        var element = layui.element
+            ,form=layui.form;
+    });
+    var myChart = echarts.init(document.getElementById("china-map"));
+    console.log("初始化");
+    var provincesText = [
+        '上海', '河北', '山西', '内蒙古',
+        '辽宁', '吉林','黑龙江',  '江苏', '浙江',
+        '安徽', '福建', '江西', '山东', '河南',
+        '湖北', '湖南', '广东', '广西', '海南',
+        '四川', '贵州', '云南', '西藏', '陕西',
+        '甘肃', '青海', '宁夏', '新疆', '北京',
+        '天津', '重庆', '香港', '澳门', '台湾'
+    ];
+    var provinces = [
+        'shanghai', 'hebei','shanxi','neimenggu',
+        'liaoning','jilin','heilongjiang','jiangsu','zhejiang',
+        'anhui','fujian','jiangxi','shandong','henan',
+        'hubei','hunan','guangdong','guangxi','hainan',
+        'sichuan','guizhou','yunnan','xizang','shaanxi',
+        'gansu','qinghai','ningxia','xinjiang', 'beijing',
+        'tianjin', 'chongqing', 'xianggang', 'aomen', 'taiwan'
+    ];
+    var catches = {};
+
+    loadMap("china", "中国");
+
+    // 加载地图
+    function loadMap(mapType, name) {
+        // console.log(mapType);
+        // console.log(name);
+        var option = {
+            title: {
+                text: name || mapType,
+                left: "center",
+                textStyle: {
+                    fontSize: 20,
+                    color: "rgba(255, 0, 0, 1)"
+                },
+            },
+            tooltip: {
+                //show:true,
+                trigger: 'item',
+            },
+            // visualMap: { //左侧小导航图标
+            //     show: true,
+            //     x: 'left',
+            //     y: 'bottom',
+            //     textStyle: {
+            //         fontSize: 8,
+            //     },
+            //     splitList: [{start: 0, end: 9},
+            //         {start: 10, end: 99},
+            //         {start: 100, end: 999},
+            //         {start: 1000, end: 9999},
+            //         {start: 10000}],
+            //     color: ['#8A3310', '#C64918', '#E55B25', '#F2AD92', '#F9DCD1']
+            // },
+            visualMap: {
+                min: 1,
+                max: 1000,
+                text: ['High', 'Low'],
+                realtime: false,
+                calculable: true,
+                inRange: {
+                    color: ['lightskyblue', 'yellow', 'orangered']
+                }
+            },
+            series: [{
+                name: name || mapType,
+                type: "map",
+                mapType,
+                roam: false, //是否开启鼠标缩放和平移漫游
+                itemStyle: {		//图形样式
+                    normal: {
+                        borderWidth: .3,//区域边框宽度
+                        borderColor: '#009fe8',//区域边框颜色
+                        areaColor: '#ffefd5',       //区域颜色
+                    },
+                    emphasis: {      //鼠标滑过地图高亮的相关设置
+                        borderWidth: .5,
+                        borderColor: '#4b0082',
+                        areaColor: '#fff',
+                    }
+                },
+                label: { // 图形上的文本标签
+                    normal: {
+                        show: true,   //市区名称
+                        fontSize: 10,
+                    },
+                    emphasis: {
+                        show: true,
+                        fontSize: 8,
+                    }
+                },
+                aspectScale: mapType === "china" ? 0.75 : 1,
+                top: "10%", //组件距离容器的距离
+                data: []
+            }],
+        };
+        if(mapType === "china"){
+            $.ajax({
+                url: '/map/getData',
+                data: {},
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    var provinces = res;
+                    console.log("各省信息");
+                    console.log(res);
+                    myChart.setOption(option);
+                    var regions = myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.originalData._nameList;
+                    if(myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.coordinateSystem.name==="china"){
+                        console.log("各个省名称");
+                        console.log(regions);
+                    }
+                    else{
+                        console.log("各个城市名称");
+                        console.log(regions);
+                    }
+                    for (var province of provinces) {
+                        option.series[0].data.push({
+                            // 'name': province.name,
+                            'name': province.provinceName,
+                            'value': province.currentConfirmedCount,
+                            //console.log(province.total.confirm)
+                        });
+                    }
+                    myChart.setOption(option);
+                    summary(mapType,name,provinces);
+                }
+            });
+        }
+        else{
+            $.ajax({
+                type: 'post',
+                url: '/map/clickProvince',
+                data: {"province":mapType},
+                dataType: 'json',
+                success: function (res) {
+                    //console.log(res);
+                    console.log("点击返回的信息");
+                    console.log("cities");
+                    console.log(res);
+                    myChart.setOption(option)
+                    // console.log("debug myChart");
+                    // console.log(myChart);
+                    var regions = myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.originalData._nameList;
+                    if(myChart._chartsMap["_ec_\u0000中国\u00000_series.map"].__model.coordinateSystem.name==="china"){
+                        console.log("各个省名称");
+                        console.log(regions);
+                    }
+                    else{
+                        console.log("各个城市名称");
+                        console.log(regions);
+                    }
+                    var cities = []
+                    for(var i = 0; i < regions.length; i++){
+                        var name = regions[i];
+                        for(var j = 0; j < res.length; j++){
+                            var item = res[j];
+                            var str = ""+name;
+                            var n = str.search(item.cityName);
+                            //console.log(name + "---" + item.cityName + "---" + n);
+                            if(n != -1){
+                                cities.push({'name':name,'value':item.currentConfirmedCount});
+                                break;
+                            }
+                        }
+                    }
+                    console.log("正则之后的城市数据");
+                    console.log(cities);
+                    for (var city of cities) {
+                        option.series[0].data.push({
+                            'name': city["name"],
+                            'value': city["value"],
+                        });
+                    }
+                    myChart.setOption(option);
+                    summary(mapType,name,res);
+                }
+            });
+        }
+
+        // 清理画布
+        //myChart.clear();
+
+        myChart.off("click");
+
+        if (mapType === "china") {
+            // 全国时，添加click 进入省级
+            myChart.on("click", function (param) {
+                //遍历取到provincesText 中的下标  去拿到对应的省js
+                for (var i = 0; i < provincesText.length; i++) {
+                    if (param.name === provincesText[i]) {
+                        //显示对应省份的方法
+                        showProvince(provinces[i], provincesText[i]);
+                        break;
+                    }
+                }
+            });
+        } else {
+            // 省份，添加双击 回退到全国
+            myChart.on("dblclick", function () {
+                loadMap("china", "中国");
+            });
+        }
+    }
+
+    // 展示对应的省
+    function showProvince(mapType, name) {
+        //这写省份的js都是通过在线构建工具生成的，保存在本地，需要时加载使用即可，最好不要一开始全部直接引入。
+        if (catches[name]) {
+            loadMap(name);
+        } else {
+            catches[mapType] = true;
+            loadBdScript(
+                "$" + mapType + "JS",
+                "../js/province/" + mapType + ".js",
+                function () {
+                    loadMap(name);
+                }
+            );
+        }
+    }
+
+    // 加载对应的JS
+    function loadBdScript(scriptId, url, callback) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        if (script.readyState) {
+            //IE
+            script.onreadystatechange = function () {
+                if (
+                    script.readyState === "loaded" ||
+                    script.readyState === "complete"
+                ) {
+                    script.onreadystatechange = null;
+                    callback();
+                }
+            };
+        } else {
+            // Others
+            script.onload = function () {
+                callback();
+            };
+        }
+        script.src = url;
+        script.id = scriptId;
+        document.getElementsByTagName("head")[0].appendChild(script);
+    }
+
+    /**
+     * 实时显示时间
+     */
+    function showTime() {
+        var time = new Date();
+        var year = time.getFullYear();
+        var month = (time.getMonth() + 1 + '').padStart(2, '0');
+        var day = (time.getDate() + '').padStart(2, '0');
+        var hour = (time.getHours() + '').padStart(2, '0');
+        var minute = (time.getMinutes() + '').padStart(2, '0');
+        var second = (time.getSeconds() + '').padStart(2, '0');
+
+        var content = `${year}年${month}月${day}日${hour}:${minute}:${second}`;
+        $('#title .time').text(content);
+    }
+    showTime();
+    setInterval(showTime, 1000);      //每秒运行一次
+    function summary(mapType, name, data) {
+        var confirmedCount = 0;
+        var curedCount = 0;
+        var deadCount = 0;
+        var currentConfirmedCount = 0;
+        if(mapType === "china"){
+            var provinces = data;
+            for (var province of provinces) {
+                confirmedCount += province.confirmedCount;
+                curedCount += province.curedCount;
+                deadCount += province.deadCount;
+                currentConfirmedCount += province.currentConfirmedCount;
+            }
+        }
+        else{
+            cities = data;
+            for (var city of cities) {
+                confirmedCount += city.confirmedCount;
+                curedCount += city.curedCount;
+                deadCount += city.deadCount;
+                currentConfirmedCount += city.currentConfirmedCount;
+            }
+        }
+
+        $('#confirm').text(confirmedCount);
+        $('#heal').text(curedCount);
+        $('#dead').text(deadCount);
+        $('#nowConfirm').text(currentConfirmedCount);
+    }
+</script>
+</body>
+</html>

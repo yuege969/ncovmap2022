@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.CityDao">
+
+<!--    <select id="insert" resultType="User">-->
+<!--        select id,nickname,password-->
+<!--        from user-->
+<!--        where id=#{id} and password=#{password};-->
+<!--    </select>-->
+
+<!--    <insert id="insert" parameterType="User">-->
+<!--        insert into user(id,nickname,password)-->
+<!--        value(#{id},#{nickName},#{password});-->
+<!--    </insert>-->
+
+<!--    <update id="update" parameterType="User">-->
+<!--        update user-->
+<!--        set password=#{password} , nickname=#{nickName}-->
+<!--        where id=#{id};-->
+<!--    </update>-->
+
+    <insert id="insert" parameterType="com.example.demo.entity.CityInfo">
+        insert into city(provinveId,cityName,currentConfirmedCount,confirmedCount,curedCount,deadCount,suspectedCount)
+        value(#{provinveId},#{cityName},#{currentConfirmedCount},#{confirmedCount},#{curedCount},#{deadCount},#{suspectedCount})
+    </insert>
+
+    <update id="update" >
+        update city
+        set currentConfirmedCount=#{currentConfirmedCount},confirmedCount=#{confirmedCount},curedCount=#{curedCount},deadCount=#{deadCount},suspectedCount=#{suspectedCount}
+        where cityName=#{cityName}
+    </update>
+
+    <select id="selectByName" resultType="com.example.demo.entity.CityInfo">
+        select *
+        from city
+        where cityName like concat ('%',#{cityName},'%')
+
+    </select>
+
+    <select id="selectByProvinceId" resultType="com.example.demo.entity.CityInfo">
+        select *
+        from city
+        where provinveId=#{provinveId} order by currentConfirmedCount desc
+    </select>
+
+
+</mapper>

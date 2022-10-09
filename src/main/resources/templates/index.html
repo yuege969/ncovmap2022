@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎观临</title>
+    <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
+    <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
+</head>
+<body>
+<div class="layui-tab">
+    <ul class="layui-tab-title">
+        <center><a href="/user" class="layui-btn" th:method="post">布灵布灵！！！点我进入疫情可视化地图</a></center>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    layui.use(['element','form'],function () {
+        var element = layui.element
+            ,form=layui.form;
+    });
+</script>
+
+</body>
+</html>
