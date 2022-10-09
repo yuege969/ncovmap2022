@@ -48,10 +48,14 @@
     function drawPieChart(data) {
       var _chart = echarts.init(document.getElementById('pie_chart'));
       var _chart_option = {
-        name: data['city'],
-        type: 'pie',
-        radius: '55%',
-        data: data['data']
+        series: [
+          {
+            name: data['city'],
+            type: 'pie',
+            radius: '55%',
+            data: data['data']
+          }
+        ]
       }
 
       _chart.setOption(_chart_option);
