@@ -15,32 +15,27 @@
   <div class="layui-tab">
     <div class="layui-tab-content">
       <div class="layui-tab-item layui-this layui-show">
-        <table class="layui-table layui-show">
-          <colgroup>
-            <col width="150">
-            <col width="200">
-            <col>
-          </colgroup>
-          <thead>
-            <tr>
-              <th>省份名称</th>
-              <th>现有确诊</th>
-              <th>累计确诊</th>
-              <th>累计治愈</th>
-              <th>累计死亡</th>
-              <th>可疑人数</th>
-            </tr>
-          </thead>
+        <div>
+          <table style="float: left;" class="layui-table layui-show">
+            <colgroup>
+              <col width="150">
+              <col width="200">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>省份名称</th>
+                <th>现有确诊</th>
+                <th>累计确诊</th>
+                <th>累计治愈</th>
+                <th>累计死亡</th>
+                <th>可疑人数</th>
+              </tr>
+            </thead>
+          </table>
 
-          <div>
-            <div style="float: left; width: 50%;">
-              <!-- list -->
-            </div>
-
-            <div id="pie_chart" style="float: right; width: 50%; height: 600px;"></div>
-
-          </div>
-        </table>
+          <div id="pie_chart" style="float: right; width: 50%; height: 600px;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -49,8 +44,6 @@
       var element = layui.element
         , form = layui.form;
     });
-
-
 
     function drawPieChart(data) {
       var _chart = echarts.init(document.getElementById('pie_chart'));
