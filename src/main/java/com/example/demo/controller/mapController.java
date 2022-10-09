@@ -28,12 +28,14 @@ public class mapController {
     @Autowired
     private ProvinceService provinceService;
 
+    /**
+     * 获取省份的疫情数据
+     * @param request
+     * @return
+     */
     @RequestMapping(value="/getData")
     public JSONArray getData(HttpServletRequest request){
         List<ProvinceInfo> allProvince = provinceService.selectAllProvince();
-        //JSONObject json=JSONObject.fromObject(allProvince);
-
-        String jsonStr = null;
         JSONArray array = new JSONArray();
         JSONObject obj;
         for(ProvinceInfo provinceInfo:allProvince){
@@ -51,7 +53,7 @@ public class mapController {
     }
 
     /**
-     * 获取省份的疫情数据
+     * 获取城市的疫情数据
      * @param request
      * @return
      */
@@ -61,9 +63,7 @@ public class mapController {
         System.out.println("鼠标点击获取的省份是 "+name);
         ProvinceInfo provinceInfo = provinceService.selectByProvinceName(name);
         String s = JSON.toJSONString(provinceInfo);
-//        System.out.println(s);
         List<CityInfo> cityInfos = cityService.selectByProvinceId(provinceInfo.getId());
-        String jsonStr = null;
         JSONArray array = new JSONArray();
         JSONObject obj;
         for(CityInfo cityInfo:cityInfos){
