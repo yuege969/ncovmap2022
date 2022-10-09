@@ -6,112 +6,139 @@
   <title>信息详情</title>
   <link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
   <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
+  <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
+  <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="../js/echarts.min.js"></script>
   <script src="../js/echarts.js"></script>
-  <script src="../js/jquery-3.6.1.js"></script>
-<!--  <script src="../js/jquery.min.js"></script>-->
+  <!--  <script src="../js/jquery-3.6.1.js"></script>-->
+  <!--  <script src="../js/jquery.min.js"></script>-->
   <script type="text/javascript" src="../js/china.js"></script>
   <link rel="stylesheet" href="../css/map.css">
 </head>
 
 <body>
-  <!-- top -->
-  <div style="padding: 5px;height: 8%" id="nav2" th:method="post">
-    <ul class="layui-nav layui-bg-green" lay-filter="">
-      <li class="layui-nav-item layui-this">
-        <a><i class="layui-icon layui-icon-console" style="font-size: 20px;margin: 0px 10px;"></i>本地疫情</a>
-      </li>
-    </ul>
-  </div>
+<!-- top -->
+<div style="padding: 5px;height: 8%" id="nav2" >
+  <ul class="layui-nav layui-bg-green" lay-filter="">
+    <li class="layui-nav-item layui-this">
+      <a><i class="layui-icon layui-icon-console" style="font-size: 20px;margin: 0px 10px;"></i>本地疫情</a>
+    </li>
+  </ul>
+</div>
 
-  <!-- 回到用户首页按钮 -->
-  <div class="layui-form-item" style="padding: 5px;height: 8%">
-    <div class="layui-input-block" style="margin: 0; padding: 0;">
-      <br/>
-      <a href="/user">
-        <input type="button" class="layui-btn" value="回到用户界面">
-      </a>
+<!-- 回到用户首页按钮 -->
+<div class="layui-form-item" style="padding: 5px;height: 8%">
+  <div class="layui-input-block" style="margin: 0; padding: 0;">
+    <br/>
+    <a href="/user">
+      <input type="button" class="layui-btn" value="回到用户界面" />
+    </a>
+  </div>
+</div >
+
+<div class="data_form" style="margin: auto;">
+  <form class="layui-form" th:action="@{/checkLocal}" method="post" target="iframe">
+    <div class="layui-form-item">
+      <label class="layui-form-label">
+        省份名称：
+      </label>
+      <div class="layui-input-inline">
+        <input type="text" name="provinceName" class="layui-input" id="provinceName" required lay-verify="required" autocomplete="off" placeholder="请输入省份名称"><br>
+      </div>
     </div>
-  </div >
 
-  <div class="data_form" style="margin: auto;">
-    <form id = "data1" onsubmit="return checkForm()">
-      <p style="display:inline;">省份名称：</p>
-      <input type="text" name="cityName">
-      <button type='submit'>提交</button>
-    </form>
-  </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button class="layui-btn" type="submit">查询</button>
+        <button class="layui-btn" type="reset">重置</button>
+      </div>
+    </div>
+    <!--      <iframe id="iframe" name="iframe" style="display:none;"></iframe>-->
+  </form>
+</div>
 
-  <div class="layui-tab">
-    <div class="layui-tab-content">
-      <div class="layui-tab-item layui-this layui-show">
-        <div>
-          <table style="float: left;" class="layui-table layui-show">
-            <colgroup>
-              <col width="150">
-              <col width="200">
-              <col>
-            </colgroup>
-            <caption style="font-size: xx-large">
-              全国疫情
-            </caption>
-            <thead>
-              <tr>
-                <th> <br>省份名称</br></th>
-                <th> <br>现有确诊</br></th>
-                <th> <br>累计确诊</br></th>
-                <th> <br>累计治愈</br></th>
-                <th> <br>累计死亡</br></th>
-                <th> <br>可疑人数</br></th>
-              </tr>
-              <tr th:each="city:${allCity}">
-                <td th:text="${city.getCityName()}">1</td>
-                <td th:text="${city.getCurrentConfirmedCount()}">2</td>
-                <td th:text="${city.getConfirmedCount()}">3</td>
-                <td th:text="${city.getCuredCount()}">4</td>
-                <td th:text="${city.getDeadCount()}">5</td>
-                <td th:text="${city.getSuspectedCount()}">6</td>
-              </tr>
-            </thead>
-          </table>
+<div class="layui-tab">
+  <div class="layui-tab-content">
+    <div class="layui-tab-item layui-this layui-show">
+      <div>
+        <table style="float: left;" class="layui-table layui-show">
+          <colgroup>
+            <col width="150">
+            <col width="200">
+            <col>
+          </colgroup>
+          <caption style="font-size: xx-large">
+            全国疫情
+          </caption>
+          <thead>
+          <tr>
+            <th> <br>省份名称</br></th>
+            <th> <br>现有确诊</br></th>
+            <th> <br>累计确诊</br></th>
+            <th> <br>累计治愈</br></th>
+            <th> <br>累计死亡</br></th>
+            <th> <br>可疑人数</br></th>
+          </tr>
+          <a id="target" th:alt-title = "${provinceName}"></a>
+          <tr th:each="city:${allCity}">
+            <td th:text="${city.getCityName()}">1</td>
+            <td th:text="${city.getCurrentConfirmedCount()}">2</td>
+            <td th:text="${city.getConfirmedCount()}">3</td>
+            <td th:text="${city.getCuredCount()}">4</td>
+            <td th:text="${city.getDeadCount()}">5</td>
+            <td th:text="${city.getSuspectedCount()}">6</td>
+          </tr>
+          </thead>
+        </table>
 
-          <div id="pie_chart" style="float: right; width: 50%; height: 600px;"></div>
-        </div>
+        <div id="pie_chart" style="float: right; width: 50%; height: 600px;"></div>
       </div>
     </div>
   </div>
-  <script type="text/javascript">
-    layui.use(['element', 'form'], function () {
-      var element = layui.element
-        , form = layui.form;
-    });
-
-    function checkForm(){
-      var form = document.getElementById('data1');
-      $.ajax({
-        url: '/allCityJsonData',
-        data: {},
-        dataType: 'json',
-        success: function (res) {
-          console.log("localData");
-          console.log(res);
-        }
-      });
-      return true;
-    };
-
-    function drawPieChart(data) {
-      var _chart = echarts.init(document.getElementById('pie_chart'));
-      var _chart_option = {
-        name: data['city'],
-        type: 'pie',
-        radius: '55%',
-        data: data['data']
+</div>
+<script type="text/javascript">
+  layui.use(['element', 'form'], function () {
+    var element = layui.element
+            , form = layui.form;
+    var target = document.getElementById("target")
+    console.log(target.title)
+    $.ajax({
+      url: '/allCityJsonData',
+      data: {"province":target.title},
+      async:true,
+      dataType: 'json',
+      type: "post",
+      success: function (res) {
+        console.log(res);
+        drawPieChart(res);
       }
+    });
+  });
+  // function checkForm(){
+  //   var form = document.getElementById('data1');
+  //   $('#target').submit(function() {
+  //     alert('Handler for .submit() called.');
+  //     var name = document.getElementById("provinceName");
+  //     console.log(name);
+  //     return false;
+  //   });
 
-      _chart.setOption(_chart_option);
+  // return true;
+  // };
+
+  function drawPieChart(data) {
+    var _chart = echarts.init(document.getElementById('pie_chart'));
+    var _chart_option = {
+      name: data['city'],
+      type: 'pie',
+      radius: '55%',
+      data: data['data']
     }
-  </script>
+
+    _chart.setOption(_chart_option);
+  }
+</script>
 </body>
 
 </html>

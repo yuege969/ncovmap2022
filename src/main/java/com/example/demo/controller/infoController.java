@@ -42,7 +42,7 @@ public class infoController {
     @RequestMapping(value = "/checkLocal")
     public ModelAndView checkLocal(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
-        String cityName = request.getParameter("cityName");
+        String cityName = request.getParameter("provinceName");
         if (cityName == null) {
             return mv;
         }
@@ -68,11 +68,11 @@ public class infoController {
     }
 
     @ResponseBody
-    @RequestMapping("/allCityJsonData")
+    @RequestMapping(value = "/allCityJsonData", method=RequestMethod.POST)
     public JSONObject allCityToJsonData(HttpServletRequest request)
     {
-        String cityName = request.getParameter("cityName");
-        ProvinceInfo nowProvince = provinceService.selectByProvinceName(cityName);
+        String provinceName = "山东";
+        ProvinceInfo nowProvince = provinceService.selectByProvinceName(provinceName);
         List<CityInfo> allCity = cityService.selectByProvinceId(nowProvince.getId());
         JSONObject jsonAllCity = new JSONObject();
         for (int i = 0; i < allCity.size(); i++)
