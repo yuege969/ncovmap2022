@@ -60,14 +60,6 @@ public class infoController {
         else
         {
             List<CityInfo> allCity = cityService.selectByProvinceId(nowProvince.getId());
-            JSONObject jsonAllProvince = new JSONObject();
-            for (int i = 0; i < allCity.size(); i++)
-            {
-                CityInfo nowCity = allCity.get(i);
-                jsonAllProvince.put(nowCity.getCityName(), nowCity.getCuredCount());
-            }
-
-            request.setAttribute("allCity", jsonAllProvince);
             request.setAttribute("allCity", allCity);
             request.setAttribute("provinceName", cityName);
             mv.setViewName("checkLocal");
