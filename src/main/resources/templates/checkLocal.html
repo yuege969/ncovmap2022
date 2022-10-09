@@ -5,6 +5,8 @@
   <title>信息详情</title>
   <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
   <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
+  <script src="../js/jquery-3.6.1.js"></script>
+  <script src="../js/jquery.min.js"></script>
 </head>
 <body>
 <div class="layui-tab">
@@ -131,6 +133,15 @@
   layui.use(['element','form'],function () {
     var element = layui.element
             ,form=layui.form;
+  });
+  $.ajax({
+    url: '/getCities',
+    data: {},
+    dataType: 'json',
+    success: function (res) {
+      console.log("localData");
+      console.log(res);
+    }
   });
 </script>
 </body>

@@ -31,7 +31,7 @@
 <div style="padding: 10px;" id="nav2" th:method="post" th:name="${state}">
     <ul class="layui-nav layui-bg-green" lay-filter="">
         <li style="display: block;" class="layui-nav-item">
-            <span style="float: left;" class="layui-icon layui-icon-username" th:text="${uname}"></span>
+            <span style="float: left;" class="layui-icon layui-icon-username" th:text="${uname}"><a th:href="/user"></a> </span>
         </li>
         <li class="layui-nav-item layui-this">
             <a><i class="layui-icon layui-icon-console" style="font-size: 20px;margin: 0px 10px;"></i>控制台</a>

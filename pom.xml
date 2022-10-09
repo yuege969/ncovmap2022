@@ -73,14 +73,6 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 		</dependency>
 
-
-
-
-
-
-
-
-
 		<!-- md5依赖-->
 		<dependency>
 			<groupId>commons-codec</groupId>
