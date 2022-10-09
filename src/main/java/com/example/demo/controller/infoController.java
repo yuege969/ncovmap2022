@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.demo.entity.CityInfo;
@@ -10,13 +9,16 @@ import com.example.demo.service.ProvinceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 @Slf4j
@@ -27,49 +29,65 @@ public class infoController {
 
     @Autowired
     private ProvinceService provinceService;
+
     @RequestMapping("/checkCountry")
-    public ModelAndView checkCountry(HttpServletRequest request){
+    public ModelAndView checkCountry(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView();
         List<ProvinceInfo> allProvince = provinceService.selectAllProvince();
-        request.setAttribute("allProvince",allProvince);
+        request.setAttribute("allProvince", allProvince);
         mv.setViewName("checkCountry");
         return mv;
     }
 
-    @RequestMapping("/checkLocal")
-    public ModelAndView checkLocal(HttpServletRequest request){
+    @RequestMapping(value = "/checkLocal")
+    public ModelAndView checkLocal(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("checkLocal");
-        return mv;
-        //TODO:实现获取所有省份各个城市的信息
-    }
-    @ResponseBody
-    @RequestMapping("/getCities")
-    public JSONArray getCities(HttpServletRequest request){
-        List<ProvinceInfo> allProvince = provinceService.selectAllProvince();
-        JSONArray array = new JSONArray();
-        for(ProvinceInfo provinceInfo: allProvince){
-            List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
-            String name = provinceInfo.getProvinceName();
-            ProvinceInfo provinceInfo1 = provinceService.selectByProvinceName(name);
-            List<CityInfo> cityInfos = cityService.selectByProvinceId(provinceInfo1.getId());
-            JSONObject obj;
-            JSONObject allObj;
-            allObj = new JSONObject();
-            for(CityInfo cityInfo:cityInfos){
-                obj = new JSONObject();
-                obj.put("cityName",cityInfo.getCityName());
-                obj.put("currentConfirmedCount",cityInfo.getCurrentConfirmedCount());
-                obj.put("confirmedCount",cityInfo.getConfirmedCount());
-                obj.put("curedCount",cityInfo.getCuredCount());
-                obj.put("deadCount",cityInfo.getDeadCount());
-                obj.put("suspectedCount",cityInfo.getSuspectedCount());
-                jsonObjects.add(obj);
-            }
-            allObj.put(name,jsonObjects);
-            array.add(allObj);
+        String cityName = request.getParameter("cityName");
+        if (cityName == null) {
+            return mv;
         }
-        return array;
+        ProvinceInfo nowProvince = provinceService.selectByProvinceName(cityName);
+        if (nowProvince == null)
+        {
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>");
+            out.println("alert('抱歉！输入的省份名不正确');");
+            out.println("history.back();");
+            out.println("</script>");
+            out.flush();
+        }
+        else
+        {
+            List<CityInfo> allCity = cityService.selectByProvinceId(nowProvince.getId());
+            JSONObject jsonAllProvince = new JSONObject();
+            for (int i = 0; i < allCity.size(); i++)
+            {
+                CityInfo nowCity = allCity.get(i);
+                jsonAllProvince.put(nowCity.getCityName(), nowCity.getCuredCount());
+            }
+
+            request.setAttribute("allCity", jsonAllProvince);
+            request.setAttribute("allCity", allCity);
+            request.setAttribute("provinceName", cityName);
+            mv.setViewName("checkLocal");
+        }
+        return mv;
+    }
+
+    @ResponseBody
+    @RequestMapping("/allCityJsonData")
+    public JSONObject allCityToJsonData(HttpServletRequest request)
+    {
+        String cityName = request.getParameter("cityName");
+        ProvinceInfo nowProvince = provinceService.selectByProvinceName(cityName);
+        List<CityInfo> allCity = cityService.selectByProvinceId(nowProvince.getId());
+        JSONObject jsonAllCity = new JSONObject();
+        for (int i = 0; i < allCity.size(); i++)
+        {
+            CityInfo nowCity = allCity.get(i);
+            jsonAllCity.put(nowCity.getCityName(), nowCity.getCuredCount());
+        }
+        return jsonAllCity;
     }
 }
-

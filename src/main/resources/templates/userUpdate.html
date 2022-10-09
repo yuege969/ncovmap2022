@@ -6,6 +6,13 @@
     <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
     <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <!--    <script src="../js/echarts.min.js"></script>-->
+    <!--    <script src="../js/echarts.js"></script>-->
+    <!--    <script src="../js/jquery-3.6.1.js"></script>-->
+    <!--    <script src="../js/jquery.min.js"></script>-->
+    <!--    <script type="text/javascript" src="../js/china.js"></script>-->
+    <!--    <link rel="stylesheet" href="../css/map.css">-->
     <script>
         function judge()
         {
@@ -28,36 +35,24 @@
     </script>
 </head>
 <body>
-<div style="padding: 10px;" id="nav2" th:method="post" th:name="${state}">
+<div style="padding: 5px;" id="nav2"; th:method="post" th:name="${state}" >
     <ul class="layui-nav layui-bg-green" lay-filter="">
-        <li style="display: block;" class="layui-nav-item">
-            <span style="float: left;" class="layui-icon layui-icon-username" th:text="${uname}"><a th:href="/user"></a> </span>
-        </li>
-        <li class="layui-nav-item layui-this">
-            <a><i class="layui-icon layui-icon-console" style="font-size: 20px;margin: 0px 10px;"></i>控制台</a>
-            <dl class="layui-nav-child">
-                <dd><a href="/checkLocal">查看本地疫情</a></dd>
-                <dd><a href="/checkCountry">查看全国疫情</a></dd>
-            </dl>
-        </li>
-        <!-- 设定layui-this来指向当前页面,即绿色滑块移动到该分类下方 -->
-        <li class="layui-nav-item">
-            <a><i class="layui-icon layui-icon-home" style="font-size: 20px;margin: 0px 10px;"></i>个人中心</a>
-            <dl class="layui-nav-child">
-                <dd><a href="/user/checkPersonInformation">查看个人信息</a></dd>
-            </dl>
-        </li>
         <li class="layui-nav-item">
             <a><i class="layui-icon layui-icon-user" style="font-size: 20px;margin: 0px 10px;"></i>我</a>
-            <dl class="layui-nav-child">
-                <dd><a href="/user/update">修改信息</a></dd>
-                <dd><a href="/user/retreat">退了</a></dd>
-            </dl>
         </li>
     </ul>
 </div>
-<div class="layui-tab">
-    <ul class="layui-tab-title">
+
+<div style="padding: 5px;height: 8%" id="nav3" th:method="post">
+    <div class="layui-input-block" style="margin: 0; padding: 0;">
+        <a href="/user">
+            <input type="button" class="layui-btn" value="回到用户界面">
+        </a>
+    </div>
+</div>
+
+<div class="layui-tab" style="padding: 5px;">
+    <ul class="layui-tab-title" th:border="10px">
         <li class="layui-this">绑定邮箱</li>
         <li th:id="id1">修改密码</li>
         <li th:id="id2">修改用户名</li>
