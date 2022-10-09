@@ -1,148 +1,62 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <title>信息详情</title>
-  <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
+  <link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
   <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
   <script src="../js/jquery-3.6.1.js"></script>
   <script src="../js/jquery.min.js"></script>
+  <script src="../js/china.js"></script>
 </head>
+
 <body>
-<div class="layui-tab">
-  <ul class="layui-tab-title">
-    <li class="layui-this">省份1信息</li>
-    <li class="layui-this">省份2信息</li>
-    <li class="layui-this">省份3信息</li>
-  </ul>
-  <div class="layui-tab-content">
-    <div class="layui-tab-item layui-this layui-show">
-      <table class="layui-table layui-show">
-        <colgroup>
-          <col width="150">
-          <col width="200">
-          <col>
-        </colgroup>
-        <thead>
-        <tr>
-          <th>省份1名称</th>
-          <th>现有确诊</th>
-          <th>累计确诊</th>
-          <th>累计治愈</th>
-          <th>累计死亡</th>
-          <th>可疑人数</th>
-        </tr>
-        </thead>
-<!--        <tr th:each="city:${cities}">-->
-<!--          <td th:text="${city.getCityName()}">1</td>-->
-<!--          <td th:text="${city.getCurrentConfirmedCount()}">2</td>-->
-<!--          <td th:text="${city.getConfirmedCount()}">3</td>-->
-<!--          <td th:text="${city.getCuredCount()}">4</td>-->
-<!--          <td th:text="${city.getDeadCount()}">5</td>-->
-<!--          <td th:text="${city.getSuspectedCount()}">6</td>-->
-<!--        </tr>-->
-        <!--                <tbody>-->
-        <!--                    <tr>-->
-        <!--                        <td>001</td>-->
-        <!--                        <td>zmy</td>-->
-        <!--                        <td>123</td>-->
-        <!--                        <td>河南</td>-->
-        <!--                        <td>yue</td>-->
-        <!--                        <td>456</td>-->
-        <!--                    </tr>-->
-        <!--                </tbody>-->
-      </table>
-    </div>
-    <div class="layui-tab-item">
-      <table class="layui-table layui-show">
-        <colgroup>
-          <col width="150">
-          <col width="200">
-          <col>
-        </colgroup>
-        <thead>
-        <tr>
-          <th>省份2名称</th>
-          <th>现有确诊</th>
-          <th>累计确诊</th>
-          <th>累计治愈</th>
-          <th>累计死亡</th>
-          <th>可疑人数</th>
-        </tr>
-        </thead>
-<!--        <tr th:each="city:${cities}">-->
-<!--          <td th:text="${city.getCityName()}">1</td>-->
-<!--          <td th:text="${city.getCurrentConfirmedCount()}">2</td>-->
-<!--          <td th:text="${city.getConfirmedCount()}">3</td>-->
-<!--          <td th:text="${city.getCuredCount()}">4</td>-->
-<!--          <td th:text="${city.getDeadCount()}">5</td>-->
-<!--          <td th:text="${city.getSuspectedCount()}">6</td>-->
-<!--        </tr>-->
-        <!--                <tbody>-->
-        <!--                    <tr>-->
-        <!--                        <td>001</td>-->
-        <!--                        <td>zmy</td>-->
-        <!--                        <td>123</td>-->
-        <!--                        <td>河南</td>-->
-        <!--                        <td>yue</td>-->
-        <!--                        <td>456</td>-->
-        <!--                    </tr>-->
-        <!--                </tbody>-->
-      </table>
-    </div>
-    <div class="layui-tab-item">
-      <table class="layui-table layui-show">
-        <colgroup>
-          <col width="150">
-          <col width="200">
-          <col>
-        </colgroup>
-        <thead>
-        <tr>
-          <th>省份3名称</th>
-          <th>现有确诊</th>
-          <th>累计确诊</th>
-          <th>累计治愈</th>
-          <th>累计死亡</th>
-          <th>可疑人数</th>
-        </tr>
-<!--        </thead>-->
-<!--        <tr th:each="city:${cities}">-->
-<!--          <td th:text="${city.getCityName()}">1</td>-->
-<!--          <td th:text="${city.getCurrentConfirmedCount()}">2</td>-->
-<!--          <td th:text="${city.getConfirmedCount()}">3</td>-->
-<!--          <td th:text="${city.getCuredCount()}">4</td>-->
-<!--          <td th:text="${city.getDeadCount()}">5</td>-->
-<!--          <td th:text="${city.getSuspectedCount()}">6</td>-->
-<!--        </tr>-->
-        <!--                <tbody>-->
-        <!--                    <tr>-->
-        <!--                        <td>001</td>-->
-        <!--                        <td>zmy</td>-->
-        <!--                        <td>123</td>-->
-        <!--                        <td>河南</td>-->
-        <!--                        <td>yue</td>-->
-        <!--                        <td>456</td>-->
-        <!--                    </tr>-->
-        <!--                </tbody>-->
-      </table>
+  <div class="layui-tab">
+    <div class="layui-tab-content">
+      <div class="layui-tab-item layui-this layui-show">
+        <div>
+          <table style="float: left;" class="layui-table layui-show">
+            <colgroup>
+              <col width="150">
+              <col width="200">
+              <col>
+            </colgroup>
+            <thead>
+              <tr>
+                <th>省份名称</th>
+                <th>现有确诊</th>
+                <th>累计确诊</th>
+                <th>累计治愈</th>
+                <th>累计死亡</th>
+                <th>可疑人数</th>
+              </tr>
+            </thead>
+          </table>
+
+          <div id="pie_chart" style="float: right; width: 50%; height: 600px;"></div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<script type="text/javascript">
-  layui.use(['element','form'],function () {
-    var element = layui.element
-            ,form=layui.form;
-  });
-  $.ajax({
-    url: '/getCities',
-    data: {},
-    dataType: 'json',
-    success: function (res) {
-      console.log("localData");
-      console.log(res);
+  <script type="text/javascript">
+    layui.use(['element', 'form'], function () {
+      var element = layui.element
+        , form = layui.form;
+    });
+
+    function drawPieChart(data) {
+      var _chart = echarts.init(document.getElementById('pie_chart'));
+      var _chart_option = {
+        name: data['city'],
+        type: 'pie',
+        radius: '55%',
+        data: data['data']
+      }
+
+      _chart.setOption(_chart_option);
     }
-  });
-</script>
+  </script>
 </body>
+
 </html>
