@@ -63,7 +63,7 @@
     <div class="layui-tab-content">
       <div class="layui-tab-item layui-this layui-show">
         <div>
-          <table style="float: left;" class="layui-table layui-show">
+          <table style="background-color: #ffe9b5; float: left; width: 50%;" class="layui-table layui-show">
             <colgroup>
               <col width="150">
               <col width="200">
@@ -74,21 +74,21 @@
             </caption>
             <thead>
               <tr>
-                <th> <br>省份名称</br></th>
-                <th> <br>现有确诊</br></th>
-                <th> <br>累计确诊</br></th>
-                <th> <br>累计治愈</br></th>
-                <th> <br>累计死亡</br></th>
-                <th> <br>可疑人数</br></th>
+                <th style="background-color: #ffe9b5;"> <b>省份名称</b></th>
+                <th style="background-color: #ffe9b5;"> <b>现有确诊</b></th>
+                <th style="background-color: #ffe9b5;"> <b>累计确诊</b></th>
+                <th style="background-color: #ffe9b5;"> <b>累计治愈</b></th>
+                <th style="background-color: #ffe9b5;"> <b>累计死亡</b></th>
+                <th style="background-color: #ffe9b5;"> <b>可疑人数</b></th>
               </tr>
               <a id="target" th:alt-title="${provinceName}"></a>
               <tr th:each="city:${allCity}">
-                <td th:text="${city.getCityName()}">1</td>
-                <td th:text="${city.getCurrentConfirmedCount()}">2</td>
-                <td th:text="${city.getConfirmedCount()}">3</td>
-                <td th:text="${city.getCuredCount()}">4</td>
-                <td th:text="${city.getDeadCount()}">5</td>
-                <td th:text="${city.getSuspectedCount()}">6</td>
+                <td style="background-color: #ffe9b5;" th:text="${city.getCityName()}">1</td>
+                <td style="background-color: #ffe9b5;" th:text="${city.getCurrentConfirmedCount()}">2</td>
+                <td style="background-color: #ffe9b5;" th:text="${city.getConfirmedCount()}">3</td>
+                <td style="background-color: #ffe9b5;" th:text="${city.getCuredCount()}">4</td>
+                <td style="background-color: #ffe9b5;" th:text="${city.getDeadCount()}">5</td>
+                <td style="background-color: #ffe9b5;" th:text="${city.getSuspectedCount()}">6</td>
               </tr>
             </thead>
           </table>
@@ -170,8 +170,6 @@
         dataType: 'json',
         type: "post",
         success: function (res) {
-          console.log(res);
-          doSave(JSON.stringify(res), "json", "data.json");
           drawPieChart(res);
         }
       });
