@@ -98,6 +98,65 @@
   </div>
 </div>
 <script type="text/javascript">
+  function doSave(value, type, name) {
+
+    var blob;
+
+    if (typeof window.Blob == "function") {
+
+      blob = new Blob([value], {
+
+        type: type
+
+      });
+
+    } else {
+
+      var BlobBuilder = window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder;
+
+      var bb = new BlobBuilder();
+
+      bb.append(value);
+
+      blob = bb.getBlob(type);
+
+    }
+
+    var URL = window.URL || window.webkitURL;
+
+    var bloburl = URL.createObjectURL(blob);
+
+    var anchor = document.createElement("a");
+
+    if ('download' in anchor) {
+
+      anchor.style.visibility = "hidden";
+
+      anchor.href = bloburl;
+
+      anchor.download = name;
+
+      document.body.appendChild(anchor);
+
+      var evt = document.createEvent("MouseEvents");
+
+      evt.initEvent("click", true, true);
+
+      anchor.dispatchEvent(evt);
+
+      document.body.removeChild(anchor);
+
+    } else if (navigator.msSaveBlob) {
+
+      navigator.msSaveBlob(blob, name);
+
+    } else {
+
+      location.href = bloburl;
+
+    }
+
+  }
   layui.use(['element', 'form'], function () {
     var element = layui.element
             , form = layui.form;
@@ -111,21 +170,11 @@
       type: "post",
       success: function (res) {
         console.log(res);
+        doSave(JSON.stringify(res), "json", "data.json");
         drawPieChart(res);
       }
     });
   });
-  // function checkForm(){
-  //   var form = document.getElementById('data1');
-  //   $('#target').submit(function() {
-  //     alert('Handler for .submit() called.');
-  //     var name = document.getElementById("provinceName");
-  //     console.log(name);
-  //     return false;
-  //   });
-
-  // return true;
-  // };
 
   function drawPieChart(data) {
     var _chart = echarts.init(document.getElementById('pie_chart'));
@@ -137,6 +186,8 @@
     }
 
     _chart.setOption(_chart_option);
+
+    //js写文件
   }
 </script>
 </body>

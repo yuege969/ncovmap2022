@@ -71,15 +71,21 @@ public class infoController {
     @RequestMapping(value = "/allCityJsonData", method=RequestMethod.POST)
     public JSONObject allCityToJsonData(HttpServletRequest request)
     {
-        String provinceName = "山东";
+        String provinceName = request.getParameter("province");
         ProvinceInfo nowProvince = provinceService.selectByProvinceName(provinceName);
         List<CityInfo> allCity = cityService.selectByProvinceId(nowProvince.getId());
         JSONObject jsonAllCity = new JSONObject();
+        jsonAllCity.put("city", provinceName);
+        JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < allCity.size(); i++)
         {
             CityInfo nowCity = allCity.get(i);
-            jsonAllCity.put(nowCity.getCityName(), nowCity.getCuredCount());
+            JSONObject data = new JSONObject();
+            data.put("value", nowCity.getCuredCount());
+            data.put("name", nowCity.getCityName());
+            jsonArray.add(data);
         }
+        jsonAllCity.put("data", jsonArray);
         return jsonAllCity;
     }
 }
