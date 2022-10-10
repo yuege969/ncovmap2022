@@ -6,7 +6,7 @@
   <title>信息详情</title>
   <link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
   <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
-  <link rel="stylesheet" type="text/css" href="../layui/css/layui.css"/>
+  <link rel="stylesheet" type="text/css" href="../layui/css/layui.css" />
   <script charset="UTF-8" type="text/javascript" src="../layui/layui.js"></script>
   <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="../js/echarts.min.js"></script>
@@ -18,178 +18,183 @@
 </head>
 
 <body>
-<!-- top -->
-<div style="padding: 5px;height: 8%" id="nav2" >
-  <ul class="layui-nav layui-bg-green" lay-filter="">
-    <li class="layui-nav-item layui-this">
-      <a><i class="layui-icon layui-icon-console" style="font-size: 20px;margin: 0px 10px;"></i>本地疫情</a>
-    </li>
-  </ul>
-</div>
-
-<!-- 回到用户首页按钮 -->
-<div class="layui-form-item" style="padding: 5px;height: 8%">
-  <div class="layui-input-block" style="margin: 0; padding: 0;">
-    <br/>
-    <a href="/user">
-      <input type="button" class="layui-btn" value="回到用户界面" />
-    </a>
+  <!-- top -->
+  <div style="padding: 5px;height: 8%" id="nav2">
+    <ul class="layui-nav layui-bg-green" lay-filter="">
+      <li class="layui-nav-item layui-this">
+        <a><i class="layui-icon layui-icon-console" style="font-size: 20px;margin: 0px 10px;"></i>本地疫情</a>
+      </li>
+    </ul>
   </div>
-</div >
 
-<div class="data_form" style="margin: auto;">
-  <form class="layui-form" th:action="@{/checkLocal}" method="post" target="iframe">
-    <div class="layui-form-item">
-      <label class="layui-form-label">
-        省份名称：
-      </label>
-      <div class="layui-input-inline">
-        <input type="text" name="provinceName" class="layui-input" id="provinceName" required lay-verify="required" autocomplete="off" placeholder="请输入省份名称"><br>
-      </div>
-    </div>
-
-    <div class="layui-form-item">
-      <div class="layui-input-block">
-        <button class="layui-btn" type="submit">查询</button>
-        <button class="layui-btn" type="reset">重置</button>
-      </div>
-    </div>
-    <!--      <iframe id="iframe" name="iframe" style="display:none;"></iframe>-->
-  </form>
-</div>
-
-<div class="layui-tab">
-  <div class="layui-tab-content">
-    <div class="layui-tab-item layui-this layui-show">
-      <div>
-        <table style="float: left;" class="layui-table layui-show">
-          <colgroup>
-            <col width="150">
-            <col width="200">
-            <col>
-          </colgroup>
-          <caption style="font-size: xx-large">
-            全国疫情
-          </caption>
-          <thead>
-          <tr>
-            <th> <br>省份名称</br></th>
-            <th> <br>现有确诊</br></th>
-            <th> <br>累计确诊</br></th>
-            <th> <br>累计治愈</br></th>
-            <th> <br>累计死亡</br></th>
-            <th> <br>可疑人数</br></th>
-          </tr>
-          <a id="target" th:alt-title = "${provinceName}"></a>
-          <tr th:each="city:${allCity}">
-            <td th:text="${city.getCityName()}">1</td>
-            <td th:text="${city.getCurrentConfirmedCount()}">2</td>
-            <td th:text="${city.getConfirmedCount()}">3</td>
-            <td th:text="${city.getCuredCount()}">4</td>
-            <td th:text="${city.getDeadCount()}">5</td>
-            <td th:text="${city.getSuspectedCount()}">6</td>
-          </tr>
-          </thead>
-        </table>
-
-        <div id="pie_chart" style="float: right; width: 50%; height: 600px;"></div>
-      </div>
+  <!-- 回到用户首页按钮 -->
+  <div class="layui-form-item" style="padding: 5px;height: 8%">
+    <div class="layui-input-block" style="margin: 0; padding: 0;">
+      <br />
+      <a href="/user">
+        <input type="button" class="layui-btn" value="回到用户界面" />
+      </a>
     </div>
   </div>
-</div>
-<script type="text/javascript">
-  function doSave(value, type, name) {
 
-    var blob;
+  <div class="data_form" style="margin: auto;">
+    <form class="layui-form" th:action="@{/checkLocal}" method="post" target="iframe">
+      <div class="layui-form-item">
+        <label class="layui-form-label">
+          省份名称：
+        </label>
+        <div class="layui-input-inline">
+          <input type="text" name="provinceName" class="layui-input" id="provinceName" required lay-verify="required"
+            autocomplete="off" placeholder="请输入省份名称"><br>
+        </div>
+      </div>
 
-    if (typeof window.Blob == "function") {
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" type="submit">查询</button>
+          <button class="layui-btn" type="reset">重置</button>
+        </div>
+      </div>
+      <!--      <iframe id="iframe" name="iframe" style="display:none;"></iframe>-->
+    </form>
+  </div>
 
-      blob = new Blob([value], {
+  <div class="layui-tab">
+    <div class="layui-tab-content">
+      <div class="layui-tab-item layui-this layui-show">
+        <div>
+          <table style="float: left;" class="layui-table layui-show">
+            <colgroup>
+              <col width="150">
+              <col width="200">
+              <col>
+            </colgroup>
+            <caption style="font-size: xx-large">
+              全国疫情
+            </caption>
+            <thead>
+              <tr>
+                <th> <br>省份名称</br></th>
+                <th> <br>现有确诊</br></th>
+                <th> <br>累计确诊</br></th>
+                <th> <br>累计治愈</br></th>
+                <th> <br>累计死亡</br></th>
+                <th> <br>可疑人数</br></th>
+              </tr>
+              <a id="target" th:alt-title="${provinceName}"></a>
+              <tr th:each="city:${allCity}">
+                <td th:text="${city.getCityName()}">1</td>
+                <td th:text="${city.getCurrentConfirmedCount()}">2</td>
+                <td th:text="${city.getConfirmedCount()}">3</td>
+                <td th:text="${city.getCuredCount()}">4</td>
+                <td th:text="${city.getDeadCount()}">5</td>
+                <td th:text="${city.getSuspectedCount()}">6</td>
+              </tr>
+            </thead>
+          </table>
 
-        type: type
+          <div id="pie_chart" style="float: right; width: 50%; height: 600px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function doSave(value, type, name) {
 
-      });
+      var blob;
 
-    } else {
+      if (typeof window.Blob == "function") {
 
-      var BlobBuilder = window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder;
+        blob = new Blob([value], {
 
-      var bb = new BlobBuilder();
+          type: type
 
-      bb.append(value);
+        });
 
-      blob = bb.getBlob(type);
+      } else {
 
-    }
+        var BlobBuilder = window.BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder;
 
-    var URL = window.URL || window.webkitURL;
+        var bb = new BlobBuilder();
 
-    var bloburl = URL.createObjectURL(blob);
+        bb.append(value);
 
-    var anchor = document.createElement("a");
+        blob = bb.getBlob(type);
 
-    if ('download' in anchor) {
-
-      anchor.style.visibility = "hidden";
-
-      anchor.href = bloburl;
-
-      anchor.download = name;
-
-      document.body.appendChild(anchor);
-
-      var evt = document.createEvent("MouseEvents");
-
-      evt.initEvent("click", true, true);
-
-      anchor.dispatchEvent(evt);
-
-      document.body.removeChild(anchor);
-
-    } else if (navigator.msSaveBlob) {
-
-      navigator.msSaveBlob(blob, name);
-
-    } else {
-
-      location.href = bloburl;
-
-    }
-
-  }
-  layui.use(['element', 'form'], function () {
-    var element = layui.element
-            , form = layui.form;
-    var target = document.getElementById("target")
-    console.log(target.title)
-    $.ajax({
-      url: '/allCityJsonData',
-      data: {"province":target.title},
-      async:true,
-      dataType: 'json',
-      type: "post",
-      success: function (res) {
-        console.log(res);
-        doSave(JSON.stringify(res), "json", "data.json");
-        drawPieChart(res);
       }
-    });
-  });
 
-  function drawPieChart(data) {
-    var _chart = echarts.init(document.getElementById('pie_chart'));
-    var _chart_option = {
-      name: data['city'],
-      type: 'pie',
-      radius: '55%',
-      data: data['data']
+      var URL = window.URL || window.webkitURL;
+
+      var bloburl = URL.createObjectURL(blob);
+
+      var anchor = document.createElement("a");
+
+      if ('download' in anchor) {
+
+        anchor.style.visibility = "hidden";
+
+        anchor.href = bloburl;
+
+        anchor.download = name;
+
+        document.body.appendChild(anchor);
+
+        var evt = document.createEvent("MouseEvents");
+
+        evt.initEvent("click", true, true);
+
+        anchor.dispatchEvent(evt);
+
+        document.body.removeChild(anchor);
+
+      } else if (navigator.msSaveBlob) {
+
+        navigator.msSaveBlob(blob, name);
+
+      } else {
+
+        location.href = bloburl;
+
+      }
+
     }
+    layui.use(['element', 'form'], function () {
+      var element = layui.element
+        , form = layui.form;
+      var target = document.getElementById("target")
+      console.log(target.title)
+      $.ajax({
+        url: '/allCityJsonData',
+        data: { "province": target.title },
+        async: true,
+        dataType: 'json',
+        type: "post",
+        success: function (res) {
+          console.log(res);
+          doSave(JSON.stringify(res), "json", "data.json");
+          drawPieChart(res);
+        }
+      });
+    });
 
-    _chart.setOption(_chart_option);
+    function drawPieChart(data) {
+      var _chart = echarts.init(document.getElementById('pie_chart'));
+      var _chart_option = {
+        series: [
+          {
+            name: data['city'],
+            type: 'pie',
+            radius: '55%',
+            data: data['data']
+          }
+        ]
+      }
 
-    //js写文件
-  }
-</script>
+      _chart.setOption(_chart_option);
+
+      //js写文件
+    }
+  </script>
 </body>
 
 </html>
